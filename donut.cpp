@@ -1,6 +1,9 @@
 #include <iostream>
 #include <vector>
 #include <cmath>
+#include <assert.h>
+
+std::vector<std::vector<std::vector<float>>> create3D(int resolution);
 
 void modify(std::vector<std::vector<std::vector<float>>> &matrix, float (*f)(float));
 
@@ -11,12 +14,26 @@ float translate(float in);
 void main()
 {
     std::vector<std::vector<std::vector<float>>> m;
-    m.emplace({});
-    m.at(0).emplace({});
-    m.at(0).at(0).emplace({});
+    m = create3D(1);
     m.at(0).at(0).at(0) = 1.0;
 
     modify(m, translate);
+}
+
+std::vector<std::vector<std::vector<float>>> create3D(int resolution) {
+    assert(resolution > 0);
+    
+    std::vector<std::vector<std::vector<float>>> m;
+    m.assign(resolution, {});
+    for (int i = 0; i < m.size() - 1; ++i) {
+        m.at(i).assign(resolution, {});
+        for (int j = 0; j < m.at(i).size() - 1; ++j) {
+            m.at(i).at(j).assign(resolution, {});
+            for (int k = 0; k < m.at(i).at(j).size() - 1; k++) {
+                m.at(i).at(j).at(k) = 0;
+            }
+        }
+    }
 }
 
 void modify(std::vector<std::vector<std::vector<float>>> &matrix, float (*f)(float))
@@ -25,10 +42,14 @@ void modify(std::vector<std::vector<std::vector<float>>> &matrix, float (*f)(flo
     {
         for (const auto layer2 : layer1)
         {
-            for (const auto layer3 : layer2)
+            for (auto layer3 : layer2)
             {
-                std::cout << layer3 << std::endl;
+                layer3 = f(layer3);
             }
         }
     }
+}
+
+float translate(float in) {
+    return 0;
 }
