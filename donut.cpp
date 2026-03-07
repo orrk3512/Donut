@@ -22,29 +22,27 @@ void main()
 
 std::vector<std::vector<std::vector<float>>> create3D(int resolution) {
     assert(resolution > 0);
-    
+
     std::vector<std::vector<std::vector<float>>> m;
     m.assign(resolution, {});
-    for (int i = 0; i < m.size() - 1; ++i) {
+    for (int i = 0; i < m.size(); ++i) {
         m.at(i).assign(resolution, {});
-        for (int j = 0; j < m.at(i).size() - 1; ++j) {
+        for (int j = 0; j < m.at(i).size(); ++j) {
             m.at(i).at(j).assign(resolution, {});
-            for (int k = 0; k < m.at(i).at(j).size() - 1; k++) {
+            for (int k = 0; k < m.at(i).at(j).size(); k++) {
                 m.at(i).at(j).at(k) = 0;
             }
         }
     }
+    return m;
 }
 
 void modify(std::vector<std::vector<std::vector<float>>> &matrix, float (*f)(float))
 {
-    for (const auto layer1 : matrix)
-    {
-        for (const auto layer2 : layer1)
-        {
-            for (auto layer3 : layer2)
-            {
-                layer3 = f(layer3);
+    for (int i = 0; i < matrix.size(); ++i) {
+        for (int j = 0; j < matrix.at(i).size(); ++j) {
+            for (int k = 0; k < matrix.at(i).at(j).size(); k++) {
+                matrix.at(i).at(j).at(k) = f(matrix.at(i).at(j).at(k));
             }
         }
     }
