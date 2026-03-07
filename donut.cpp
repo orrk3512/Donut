@@ -25,6 +25,7 @@ public:
         }
     }
 
+    // Runs function f on all points within the matrix with the input being the value at that point.
     void modify(float (*f)(float))
     {
         for (int i = 0; i < m.size(); ++i)
@@ -39,7 +40,8 @@ public:
         }
     }
 
-    void modify(float (*f)())
+    // Runs function f on all points within the matrix with the input being the coordinattes of that point
+    void modify(float (*f)(int, int, int))
     {
         for (int i = 0; i < m.size(); ++i)
         {
@@ -47,7 +49,7 @@ public:
             {
                 for (int k = 0; k < m.at(i).at(j).size(); k++)
                 {
-                    m.at(i).at(j).at(k) = f();
+                    m.at(i).at(j).at(k) = f(i, j, k);
                 }
             }
         }
@@ -58,7 +60,8 @@ private:
     int resolution;
 };
 
-float donutToMatrix(float in);
+// Determines whether a point in a 3d matrix is inside the mathmatical representation of a donut
+float donutToMatrix();
 
 void render(const std::vector<std::vector<std::vector<float>>> &matrix);
 
@@ -68,6 +71,10 @@ void main()
 {
     matrix m(1);
     m.modify(translate);
+}
+
+float donutToMatrix() {
+
 }
 
 float translate(float in)
