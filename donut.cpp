@@ -35,18 +35,21 @@ float donutToMatrix(int x, int y, int z, int resolution, float time_offset);
 
 float translate(float in);
 
-float gradientShade(int x, int y, int z, int resolution, float time_offset);
+float gradientShade(float value, int x, int y, int z, int resolution);
 
 void main()
 {
     const std::vector<char> shading_binary = {' ', '#'};
+    const std::vector<char> shading_simple = {' ', '.', ':', '-', '=', '+', '*', '#'};
+    
     float time = 0;
 
     for (int i = 0; i < 50; ++i)
     {
         matrix m(32);
         m.modify(donutToMatrix, time);
-        m.render(shading_binary);
+        m.modify(gradientShade);
+        m.render(shading_simple);
 
         // Sleep
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
@@ -86,6 +89,11 @@ float donutToMatrix(int x, int y, int z, int resolution, float time_offset)
     }
 }
 
+float gradientShade(float value, int x, int y, int z, int resolution) {
+    if (value == 0) return 0;
+    return value * (static_cast<float>(x) / resolution + static_cast<float>(y) / resolution) / 2;
+}
+
 float translate(float in)
 {
     return 1;
@@ -109,19 +117,19 @@ matrix::matrix(int res)
     }
 }
 
-// void matrix::modify(float (*f)(float))
-// {
-//     for (int i = 0; i < m.size(); ++i)
-//     {
-//         for (int j = 0; j < m.at(i).size(); ++j)
-//         {
-//             for (int k = 0; k < m.at(i).at(j).size(); k++)
-//             {
-//                 m.at(i).at(j).at(k) = f(m.at(i).at(j).at(k));
-//             }
-//         }
-//     }
-// }
+void matrix::modify(float (*f)(float, int, int, int, int))
+{
+    for (int i = 0; i < m.size(); ++i)
+    {
+        for (int j = 0; j < m.at(i).size(); ++j)
+        {
+            for (int k = 0; k < m.at(i).at(j).size(); k++)
+            {
+                m.at(i).at(j).at(k) = f(m.at(i).at(j).at(k), i, j, k, resolution);
+            }
+        }
+    }
+}
 
 void matrix::modify(float (*f)(int, int, int, int, float), float time)
 {
@@ -145,7 +153,7 @@ void matrix::render(std::vector<char> shading)
     {
         for (const auto y : x)
         {
-            std::cout << shading.at(static_cast<int>(y * (shading.size() - 1))) << " ";
+            std::cout << shading.at(static_cast<int>(y * (shading.size() - 2))) << " ";
         }
         std::cout << std::endl;
     }
