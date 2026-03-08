@@ -40,7 +40,7 @@ float gradientShade(float value, int x, int y, int z, int resolution);
 void main()
 {
     const std::vector<char> shading_binary = {' ', '#'};
-    const std::vector<char> shading_simple = {' ', '.', ':', '-', '=', '+', '*', '#'};
+    const std::vector<char> shading_simple = {' ', '.', '-', '=', '+', '*', '#'};
 
     float time = 0;
 
