@@ -35,9 +35,10 @@ float translate(float in);
 
 void main()
 {
-    matrix m(4);
-    m.modify(translate);
-    m.render({});
+    const std::vector<char> shading_binary = {' ', '#'};
+    matrix m(32);
+    m.modify(donutToMatrix);
+    m.render(shading_binary);
 }
 
 float donutToMatrix(int x, int y, int z, int resolution)
@@ -45,9 +46,9 @@ float donutToMatrix(int x, int y, int z, int resolution)
     // Offset from the origin of the matrix to the center of the of the cartesian space
     const float offset = 0.5 * resolution;
     // Radius from the center of mass to outer edge of the donut
-    const float outer_radius = 0.7 * resolution;
+    const float outer_radius = 0.3 * resolution;
     // Radius from the inside of the tube to outside of the tube of the torus
-    const float tube_radius = 0.2 * resolution;
+    const float tube_radius = 0.1 * resolution;
 
     // transformations to cartesian space
     const float x_cart = x - offset;
@@ -123,7 +124,7 @@ void matrix::render(std::vector<char> shading) {
 
     for (const auto x : out) {
         for (const auto y : x) {
-            std::cout << y << " ";
+            std::cout << shading.at(static_cast<int>(y*(shading.size()-1))) << " ";
         }
         std::cout << std::endl;
     }
