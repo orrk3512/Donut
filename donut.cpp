@@ -40,7 +40,7 @@ float gradientShade(float value, int x, int y, int z, int resolution);
 int main()
 {
     const std::vector<char> shading_binary = {' ', '#'};
-    const std::vector<char> shading_simple = {' ', '.', '-', '=', '+', '*', '#'};
+    const std::vector<char> shading_simple = {' ', '.', '-', '=', '+', '*', '#', '@', '%'};
 
     float time = 0;
 
@@ -68,7 +68,7 @@ float donutToMatrix(int x, int y, int z, int resolution, float time_offset)
     const float tube_radius = 0.1 * resolution;
 
     // transformations to cartesian space
-    x = x - offset + std::sin(time_offset) * 10; // Floating animation
+    x = x - offset + std::sin(time_offset) * 0; // Floating animation
     y = y - offset;
     z = z - offset;
 
