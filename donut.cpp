@@ -41,7 +41,7 @@ void main()
 {
     const std::vector<char> shading_binary = {' ', '#'};
     const std::vector<char> shading_simple = {' ', '.', ':', '-', '=', '+', '*', '#'};
-    
+
     float time = 0;
 
     for (int i = 0; i < 50; ++i)
@@ -67,18 +67,23 @@ float donutToMatrix(int x, int y, int z, int resolution, float time_offset)
     const float tube_radius = 0.1 * resolution;
 
     // transformations to cartesian space
-    x = x - offset + std::sin(time_offset) * 0; // Floating animation
+    x = x - offset + std::sin(time_offset) * 10; // Floating animation
     y = y - offset;
     z = z - offset;
 
-    float angle = std::sin(time_offset);
+    float angle = time_offset;
 
-    x = x * std::cos(angle) + z * std::sin(angle);
-    z = -x * std::sin(angle) + z * std::cos(angle);
+    float x_rotateY = x * std::cos(angle) + z * std::sin(angle);
+    float y_rotateY = y;
+    float z_rotateY = -x * std::sin(angle) + z * std::cos(angle);
+
+    float x_new = x_rotateY;
+    float y_new = y_rotateY * std::cos(angle) - z_rotateY * std::sin(angle);
+    float z_new = y_rotateY * std::sin(angle) + z_rotateY * std::cos(angle);
 
     // Distance from the point to the torus formed by the tube_radius
     // Equation of torus is: (outer_radius - sqrt(x^2 + y^2))^2 + z^2 <= tube_radius^2
-    const float torus = std::sqrt(std::pow(outer_radius - std::sqrt(std::pow(x, 2) + std::pow(y, 2)), 2) + std::pow(z, 2));
+    const float torus = std::sqrt(std::pow(outer_radius - std::sqrt(std::pow(x_new, 2) + std::pow(y_new, 2)), 2) + std::pow(z_new, 2));
     if (torus <= tube_radius)
     {
         return 1.0;
@@ -89,9 +94,11 @@ float donutToMatrix(int x, int y, int z, int resolution, float time_offset)
     }
 }
 
-float gradientShade(float value, int x, int y, int z, int resolution) {
-    if (value == 0) return 0;
-    return value * (static_cast<float>(x) / resolution + static_cast<float>(y) / resolution) / 2;
+float gradientShade(float value, int x, int y, int z, int resolution)
+{
+    if (value == 0)
+        return 0;
+    return value * (static_cast<float>(y) / resolution + static_cast<float>(z) / resolution) / 2;
 }
 
 float translate(float in)
@@ -147,6 +154,11 @@ void matrix::modify(float (*f)(int, int, int, int, float), float time)
 
 void matrix::render(std::vector<char> shading)
 {
+    for (int i = 0; i < 10; ++i)
+    {
+        std::cout << "\n";
+    }
+
     std::vector<std::vector<float>> out = castTo2d();
 
     for (const auto x : out)
