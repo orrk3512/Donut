@@ -37,7 +37,7 @@ float translate(float in);
 
 float gradientShade(float value, int x, int y, int z, int resolution);
 
-void main()
+int main()
 {
     const std::vector<char> shading_binary = {' ', '#'};
     const std::vector<char> shading_simple = {' ', '.', '-', '=', '+', '*', '#'};
@@ -55,6 +55,7 @@ void main()
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
         time += 0.3;
     }
+    return 0;
 }
 
 float donutToMatrix(int x, int y, int z, int resolution, float time_offset)
