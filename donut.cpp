@@ -16,9 +16,14 @@ public:
     // Runs function f on all points within the matrix with the input being the coordinattes of that point and the resolution
     void modify(float (*f)(int, int, int, int));
 
-    std::vector<std::vector<std::vector<float>>> getMatrix();
+    // Calls castTo2d()
+    // Prints the 2d matrix to the terminal via converting values to their corrosponding shading values
+    void render(std::vector<char> shading);
 
 private:
+    // Looks at the 3d vector from one side and puts the first non-zero number it finds into the corrosping place in the 2d vector
+    std::vector<std::vector<float>> castTo2d();
+
     std::vector<std::vector<std::vector<float>>> m;
     int resolution;
 };
@@ -26,14 +31,13 @@ private:
 // Determines whether a point in a 3d matrix is inside the mathmatical representation of a donut
 float donutToMatrix(int x, int y, int z, int resolution);
 
-void render(const std::vector<std::vector<std::vector<float>>> &matrix);
-
 float translate(float in);
 
 void main()
 {
-    matrix m(32);
-    m.modify(donutToMatrix);
+    matrix m(4);
+    m.modify(translate);
+    m.render({});
 }
 
 float donutToMatrix(int x, int y, int z, int resolution)
@@ -69,22 +73,22 @@ float translate(float in)
 }
 
 matrix::matrix(int res)
+{
+    resolution = res;
+    m.assign(resolution, {});
+    for (int i = 0; i < m.size(); ++i)
     {
-        resolution = res;
-        m.assign(resolution, {});
-        for (int i = 0; i < m.size(); ++i)
+        m.at(i).assign(resolution, {});
+        for (int j = 0; j < m.at(i).size(); ++j)
         {
-            m.at(i).assign(resolution, {});
-            for (int j = 0; j < m.at(i).size(); ++j)
+            m.at(i).at(j).assign(resolution, {});
+            for (int k = 0; k < m.at(i).at(j).size(); k++)
             {
-                m.at(i).at(j).assign(resolution, {});
-                for (int k = 0; k < m.at(i).at(j).size(); k++)
-                {
-                    m.at(i).at(j).at(k) = 0;
-                }
+                m.at(i).at(j).at(k) = 0;
             }
         }
     }
+}
 
 void matrix::modify(float (*f)(float))
 {
@@ -114,6 +118,39 @@ void matrix::modify(float (*f)(int, int, int, int))
     }
 }
 
-std::vector<std::vector<std::vector<float>>> matrix::getMatrix() {
-    return m;
+void matrix::render(std::vector<char> shading) {
+    std::vector<std::vector<float>> out = castTo2d();
+
+    for (const auto x : out) {
+        for (const auto y : x) {
+            std::cout << y << " ";
+        }
+        std::cout << std::endl;
+    }
+}
+
+std::vector<std::vector<float>> matrix::castTo2d()
+{
+    std::vector<std::vector<float>> out;
+    out.assign(resolution, {});
+    for (int i = 0; i < resolution; ++i)
+    {
+        out.at(i).assign(resolution, 0);
+    }
+
+    for (int i = 0; i < resolution; ++i)
+    {
+        for (int j = 0; j < resolution; ++j)
+        {
+            for (int z = 0; z < resolution; ++z)
+            {
+                float current_value = m.at(i).at(j).at(z);
+                if (current_value != 0) {
+                    out.at(i).at(j) = current_value;
+                    break;
+                }
+            }
+        }
+    }
+    return out;
 }
