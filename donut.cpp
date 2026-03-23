@@ -34,8 +34,6 @@ private:
 // Determines whether a point in a 3d matrix is inside the mathmatical representation of a donut
 float donutToMatrix(int x, int y, int z, int resolution, float time_offset);
 
-float translate(float in);
-
 float gradientShade(float value, int x, int y, int z, int resolution);
 
 int main()
@@ -45,9 +43,9 @@ int main()
 
     float time = 0;
 
-    for (int i = 0; i < 50; ++i)
+    for (int i = 0; i < 200; ++i)
     {
-        matrix m(16);
+        matrix m(32);
         m.modify(donutToMatrix, time);
         m.modify(gradientShade);
         m.render(shading_simple);
@@ -101,11 +99,6 @@ float gradientShade(float value, int x, int y, int z, int resolution)
     if (value == 0)
         return 0;
     return value * (static_cast<float>(y) / resolution + static_cast<float>(z) / resolution) / 2;
-}
-
-float translate(float in)
-{
-    return 1;
 }
 
 matrix::matrix(int res)
