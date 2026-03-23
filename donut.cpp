@@ -4,6 +4,7 @@
 #include <assert.h>
 #include <chrono>
 #include <thread>
+#include <string>
 
 // 3d matrix for storing and modifying the donut
 class matrix
@@ -46,7 +47,7 @@ int main()
 
     for (int i = 0; i < 50; ++i)
     {
-        matrix m(32);
+        matrix m(16);
         m.modify(donutToMatrix, time);
         m.modify(gradientShade);
         m.render(shading_simple);
@@ -155,21 +156,24 @@ void matrix::modify(float (*f)(int, int, int, int, float), float time)
 
 void matrix::render(std::vector<char> shading)
 {
-    for (int i = 0; i < 10; ++i)
-    {
-        std::cout << "\n";
-    }
+    // for (int i = 0; i < 10; ++i)
+    // {
+    //     std::cout << "\n";
+    // }
 
     std::vector<std::vector<float>> out = castTo2d();
+    std::string str_out;
 
     for (const auto x : out)
     {
         for (const auto y : x)
         {
-            std::cout << shading.at(static_cast<int>(y * (shading.size() - 2))) << " ";
+            str_out.append(1, shading.at(y * (shading.size())));
+            str_out.append(" ");
         }
-        std::cout << std::endl;
+        str_out.append("\n");
     }
+    std::cout << str_out;
 }
 
 std::vector<std::vector<float>> matrix::castTo2d()
