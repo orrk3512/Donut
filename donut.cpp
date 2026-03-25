@@ -14,9 +14,11 @@ public:
     matrix(int res);
 
     // Runs function f on all points within the matrix with the input being the value at that point.
+    // f(value, x, y, z, resolution)
     void createLighting(float (*f)(float, int, int, int, int));
 
     // Runs function f on all points within the matrix with the input being the coordinattes of that point and the resolution
+    // f(x, y, z, resolution, time)
     void createShape(float (*f)(int, int, int, int, float), float time);
 
     // Calls castTo2d()
@@ -50,7 +52,6 @@ int main()
         m.createLighting(gradientShade);
         m.render(shading_simple);
 
-        // Sleep
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
         time += 0.3;
     }
@@ -149,11 +150,6 @@ void matrix::createShape(float (*f)(int, int, int, int, float), float time)
 
 void matrix::render(std::vector<char> shading)
 {
-    // for (int i = 0; i < 10; ++i)
-    // {
-    //     std::cout << "\n";
-    // }
-
     std::vector<std::vector<float>> out = castTo2d();
     std::string str_out;
 
