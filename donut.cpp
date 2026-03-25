@@ -14,10 +14,10 @@ public:
     matrix(int res);
 
     // Runs function f on all points within the matrix with the input being the value at that point.
-    void modify(float (*f)(float, int, int, int, int));
+    void createLighting(float (*f)(float, int, int, int, int));
 
     // Runs function f on all points within the matrix with the input being the coordinattes of that point and the resolution
-    void modify(float (*f)(int, int, int, int, float), float time);
+    void createShape(float (*f)(int, int, int, int, float), float time);
 
     // Calls castTo2d()
     // Prints the 2d matrix to the terminal via converting values to their corrosponding shading values
@@ -46,8 +46,8 @@ int main()
     for (int i = 0; i < 200; ++i)
     {
         matrix m(32);
-        m.modify(donutToMatrix, time);
-        m.modify(gradientShade);
+        m.createShape(donutToMatrix, time);
+        m.createLighting(gradientShade);
         m.render(shading_simple);
 
         // Sleep
@@ -119,7 +119,7 @@ matrix::matrix(int res)
     }
 }
 
-void matrix::modify(float (*f)(float, int, int, int, int))
+void matrix::createLighting(float (*f)(float, int, int, int, int))
 {
     for (int i = 0; i < m.size(); ++i)
     {
@@ -133,7 +133,7 @@ void matrix::modify(float (*f)(float, int, int, int, int))
     }
 }
 
-void matrix::modify(float (*f)(int, int, int, int, float), float time)
+void matrix::createShape(float (*f)(int, int, int, int, float), float time)
 {
     for (int i = 0; i < m.size(); ++i)
     {
